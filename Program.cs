@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
 using people_dot_org;
 using System;
+using System.Numerics;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -213,6 +214,41 @@ app.MapDelete("/api/plan/{planId}", (PeopleDotOrgDbContext db, int id) =>
 
     return Results.NoContent();
 });
+
+// ### REQUEST Endpoints
+
+// Get all requests
+app.MapGet("/api/requests", (PeopleDotOrgDbContext db) =>
+{
+    return db.Requests.ToList();
+});
+
+// Post a new request
+app.MapPost("/api/request", (PeopleDotOrgDbContext db, Request request) =>
+{
+    db.Requests.Add(request);
+    db.SaveChanges();
+
+    return Results.Created($"/api/request/{request.Id}", request);
+});
+
+
+// Delete Request
+app.MapDelete("/api/request/{requestId}", (PeopleDotOrgDbContext db, int id) =>
+{
+    Request requestToRemove = db.Requests.SingleOrDefault(x  => x.Id == id);
+
+    if (requestToRemove == null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Requests.Remove(requestToRemove);
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
+
 
 app.Run();
 
