@@ -163,5 +163,56 @@ app.MapDelete("/api/team/{teamId}", (PeopleDotOrgDbContext db, int id) =>
     return Results.NoContent();
 });
 
+// ### Plan Endpoints ###
+
+// Get all plans
+app.MapGet("/api/plans", (PeopleDotOrgDbContext db) =>
+{
+    return db.Plans.ToList();
+
+});
+
+// Create Plan
+app.MapPost("/api/plan", (PeopleDotOrgDbContext db, Plan plan) =>
+{
+    db.Plans.Add(plan);
+    db.SaveChanges();
+    return Results.Created($"/api/people/{plan.Id}", plan);
+});
+
+// Update Plan
+app.MapPut("/api/plan/{planId}", (PeopleDotOrgDbContext db, int id, Plan plan) =>
+{
+    Plan planToUpdate = db.Plans.SingleOrDefault(s => s.Id == id);
+    if (planToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+
+    planToUpdate.Id = plan.Id;
+    planToUpdate.Name = plan.Name;
+    planToUpdate.Details = plan.Details;
+
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
+// Delete Plan
+app.MapDelete("/api/plan/{planId}", (PeopleDotOrgDbContext db, int id) =>
+{
+    Plan planToRemove = db.Plans.SingleOrDefault(p => p.Id == id);
+
+    if (planToRemove == null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Plans.Remove(planToRemove);
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
 app.Run();
 
