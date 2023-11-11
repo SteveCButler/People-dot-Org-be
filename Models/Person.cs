@@ -16,8 +16,8 @@ public class Person
     public string Phone { get; set; }
     public string Uid { get; set; }
     public DateTime CreatedOn { get; set; }
-    public Boolean IsAdmin { get; set; } = false;
-    public Boolean IsTeamLead { get; set; } = false;
+    public Boolean IsAdmin { get; set; }
+    public Boolean IsTeamLead { get; set; }
     public ICollection<Team> Teams { get; set; }
 
     
