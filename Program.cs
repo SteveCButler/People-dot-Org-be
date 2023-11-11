@@ -114,6 +114,54 @@ app.MapDelete("/api/person/{personId}", (PeopleDotOrgDbContext db, int id) =>
     return Results.NoContent();
 });
 
+// ### TEAM Endpoints ###
+
+// Get All Teams
+app.MapGet("/api/teams", (PeopleDotOrgDbContext db) =>
+{
+    return db.Teams.ToList();
+});
+
+// Create Team
+app.MapPost("/api/team", (PeopleDotOrgDbContext db, Team team) =>
+{
+    db.Teams.Add(team);
+    db.SaveChanges();
+    return Results.Created($"/api/people/{team.Id}", team);
+});
+
+// Update Team
+app.MapPut("/api/team/{teamId}", (PeopleDotOrgDbContext db, int id, Team team) =>
+{
+    Team teamToUpdate = db.Teams.SingleOrDefault(s => s.Id == id);
+    if (teamToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+
+    teamToUpdate.Id = team.Id;
+    teamToUpdate.Name = team.Name;
+    teamToUpdate.Description = team.Description;
+
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
+// Delete Team
+app.MapDelete("/api/team/{teamId}", (PeopleDotOrgDbContext db, int id) =>
+{
+    Team teamToRemove = db.Teams.SingleOrDefault(x => x.Id == id);
+    if (teamToRemove == null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Teams.Remove(teamToRemove);
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
 
 app.Run();
 
