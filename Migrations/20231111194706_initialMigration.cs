@@ -46,21 +46,6 @@ namespace people_dot_org.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Teams",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    PlanId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Teams", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Requests",
                 columns: table => new
                 {
@@ -88,18 +73,39 @@ namespace people_dot_org.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Teams",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    PlanId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Teams_Plans_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Plans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PersonTeam",
                 columns: table => new
                 {
-                    PersonsId = table.Column<int>(type: "integer", nullable: false),
+                    PeopleId = table.Column<int>(type: "integer", nullable: false),
                     TeamsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersonTeam", x => new { x.PersonsId, x.TeamsId });
+                    table.PrimaryKey("PK_PersonTeam", x => new { x.PeopleId, x.TeamsId });
                     table.ForeignKey(
-                        name: "FK_PersonTeam_People_PersonsId",
-                        column: x => x.PersonsId,
+                        name: "FK_PersonTeam_People_PeopleId",
+                        column: x => x.PeopleId,
                         principalTable: "People",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -124,6 +130,11 @@ namespace people_dot_org.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Requests_PlanId",
                 table: "Requests",
+                column: "PlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teams_PlanId",
+                table: "Teams",
                 column: "PlanId");
         }
 

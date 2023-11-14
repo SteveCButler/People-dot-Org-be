@@ -12,7 +12,7 @@ using people_dot_org;
 namespace people_dot_org.Migrations
 {
     [DbContext(typeof(PeopleDotOrgDbContext))]
-    [Migration("20231111170751_initialMigration")]
+    [Migration("20231111194706_initialMigration")]
     partial class initialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,18 +138,20 @@ namespace people_dot_org.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PlanId");
+
                     b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("PersonTeam", b =>
                 {
-                    b.Property<int>("PersonsId")
+                    b.Property<int>("PeopleId")
                         .HasColumnType("integer");
 
                     b.Property<int>("TeamsId")
                         .HasColumnType("integer");
 
-                    b.HasKey("PersonsId", "TeamsId");
+                    b.HasKey("PeopleId", "TeamsId");
 
                     b.HasIndex("TeamsId");
 
@@ -175,11 +177,20 @@ namespace people_dot_org.Migrations
                     b.Navigation("Plan");
                 });
 
+            modelBuilder.Entity("people_dot_org.Models.Team", b =>
+                {
+                    b.HasOne("people_dot_org.Models.Plan", null)
+                        .WithMany("Teams")
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PersonTeam", b =>
                 {
                     b.HasOne("people_dot_org.Models.Person", null)
                         .WithMany()
-                        .HasForeignKey("PersonsId")
+                        .HasForeignKey("PeopleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -188,6 +199,11 @@ namespace people_dot_org.Migrations
                         .HasForeignKey("TeamsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("people_dot_org.Models.Plan", b =>
+                {
+                    b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618
         }
