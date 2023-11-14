@@ -12,8 +12,8 @@ using people_dot_org;
 namespace people_dot_org.Migrations
 {
     [DbContext(typeof(PeopleDotOrgDbContext))]
-    [Migration("20231111173347_updateTeamICollection")]
-    partial class updateTeamICollection
+    [Migration("20231114011209_updateTeam")]
+    partial class updateTeam
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -104,9 +104,8 @@ namespace people_dot_org.Migrations
                     b.Property<int>("PlanId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("RequestState")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("RequestState")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -133,10 +132,12 @@ namespace people_dot_org.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("PlanId")
+                    b.Property<int?>("PlanId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PlanId");
 
                     b.ToTable("Teams");
                 });
@@ -175,6 +176,13 @@ namespace people_dot_org.Migrations
                     b.Navigation("Plan");
                 });
 
+            modelBuilder.Entity("people_dot_org.Models.Team", b =>
+                {
+                    b.HasOne("people_dot_org.Models.Plan", null)
+                        .WithMany("Teams")
+                        .HasForeignKey("PlanId");
+                });
+
             modelBuilder.Entity("PersonTeam", b =>
                 {
                     b.HasOne("people_dot_org.Models.Person", null)
@@ -188,6 +196,11 @@ namespace people_dot_org.Migrations
                         .HasForeignKey("TeamsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("people_dot_org.Models.Plan", b =>
+                {
+                    b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,4 +6,6 @@ public class Plan
     public string Name { get; set; }
     public string Details { get; set; }
     public DateTime Date { get; set; }
+
+    public ICollection<Team> Teams { get; set; }
 }

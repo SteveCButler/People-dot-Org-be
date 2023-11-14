@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using people_dot_org;
@@ -11,9 +12,10 @@ using people_dot_org;
 namespace people_dot_org.Migrations
 {
     [DbContext(typeof(PeopleDotOrgDbContext))]
-    partial class PeopleDotOrgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231114000610_enumToRequest")]
+    partial class enumToRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,7 +132,7 @@ namespace people_dot_org.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PlanId")
+                    b.Property<int>("PlanId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -178,7 +180,9 @@ namespace people_dot_org.Migrations
                 {
                     b.HasOne("people_dot_org.Models.Plan", null)
                         .WithMany("Teams")
-                        .HasForeignKey("PlanId");
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PersonTeam", b =>
