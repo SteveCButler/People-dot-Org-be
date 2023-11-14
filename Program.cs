@@ -81,9 +81,9 @@ app.MapPost("/api/person", (PeopleDotOrgDbContext db, Person person) =>
 });
 
 //Edit Person
-app.MapPut("/api/person/{personId}", (PeopleDotOrgDbContext db, int id, Person person) =>
+app.MapPut("/api/person/{personId}", (PeopleDotOrgDbContext db, int personId, Person person) =>
 {
-    var personToUpdate = db.People.FirstOrDefault(x => x.Id == id);
+    var personToUpdate = db.People.FirstOrDefault(x => x.Id == personId);
     if (personToUpdate == null)
     {
         return Results.NotFound();
@@ -104,9 +104,9 @@ app.MapPut("/api/person/{personId}", (PeopleDotOrgDbContext db, int id, Person p
 
 
 // Delete an user
-app.MapDelete("/api/person/{personId}", (PeopleDotOrgDbContext db, int id) =>
+app.MapDelete("/api/person/{personId}", (PeopleDotOrgDbContext db, int personId) =>
 {
-    Person person = db.People.SingleOrDefault(u => u.Id == id);
+    Person person = db.People.SingleOrDefault(u => u.Id == personId);
     if (person == null)
     {
         return Results.NotFound();
@@ -133,9 +133,9 @@ app.MapPost("/api/team", (PeopleDotOrgDbContext db, Team team) =>
 });
 
 // Update Team
-app.MapPut("/api/team/{teamId}", (PeopleDotOrgDbContext db, int id, Team team) =>
+app.MapPut("/api/team/{teamId}", (PeopleDotOrgDbContext db, int teamId, Team team) =>
 {
-    Team teamToUpdate = db.Teams.SingleOrDefault(s => s.Id == id);
+    Team teamToUpdate = db.Teams.SingleOrDefault(s => s.Id == teamId);
     if (teamToUpdate == null)
     {
         return Results.NotFound();
@@ -151,9 +151,9 @@ app.MapPut("/api/team/{teamId}", (PeopleDotOrgDbContext db, int id, Team team) =
 });
 
 // Delete Team
-app.MapDelete("/api/team/{teamId}", (PeopleDotOrgDbContext db, int id) =>
+app.MapDelete("/api/team/{teamId}", (PeopleDotOrgDbContext db, int teamId) =>
 {
-    Team teamToRemove = db.Teams.SingleOrDefault(x => x.Id == id);
+    Team teamToRemove = db.Teams.SingleOrDefault(x => x.Id == teamId);
     if (teamToRemove == null)
     {
         return Results.NotFound();
@@ -183,9 +183,9 @@ app.MapPost("/api/plan", (PeopleDotOrgDbContext db, Plan plan) =>
 });
 
 // Update Plan
-app.MapPut("/api/plan/{planId}", (PeopleDotOrgDbContext db, int id, Plan plan) =>
+app.MapPut("/api/plan/{planId}", (PeopleDotOrgDbContext db, int planId, Plan plan) =>
 {
-    Plan planToUpdate = db.Plans.SingleOrDefault(s => s.Id == id);
+    Plan planToUpdate = db.Plans.SingleOrDefault(s => s.Id == planId);
     if (planToUpdate == null)
     {
         return Results.NotFound();
@@ -201,9 +201,9 @@ app.MapPut("/api/plan/{planId}", (PeopleDotOrgDbContext db, int id, Plan plan) =
 });
 
 // Delete Plan
-app.MapDelete("/api/plan/{planId}", (PeopleDotOrgDbContext db, int id) =>
+app.MapDelete("/api/plan/{planId}", (PeopleDotOrgDbContext db, int planId) =>
 {
-    Plan planToRemove = db.Plans.SingleOrDefault(p => p.Id == id);
+    Plan planToRemove = db.Plans.SingleOrDefault(p => p.Id == planId);
 
     if (planToRemove == null)
     {
@@ -235,9 +235,9 @@ app.MapPost("/api/request", (PeopleDotOrgDbContext db, Request request) =>
 
 
 // Delete Request
-app.MapDelete("/api/request/{requestId}", (PeopleDotOrgDbContext db, int id) =>
+app.MapDelete("/api/request/{requestId}", (PeopleDotOrgDbContext db, int requestId) =>
 {
-    Request requestToRemove = db.Requests.SingleOrDefault(x  => x.Id == id);
+    Request requestToRemove = db.Requests.SingleOrDefault(x  => x.Id == requestId);
 
     if (requestToRemove == null)
     {
