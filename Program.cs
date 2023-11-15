@@ -135,6 +135,17 @@ app.MapGet("/api/teams", (PeopleDotOrgDbContext db) =>
     return db.Teams.ToList();
 });
 
+//Get Single Team By Id
+app.MapGet("/api/team/{id}", (PeopleDotOrgDbContext db, int id) =>
+{
+    Team team = db.Teams.SingleOrDefault(x => x.Id == id);
+    if (team == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(team);
+});
+
 // Create Team
 app.MapPost("/api/team", (PeopleDotOrgDbContext db, Team team) =>
 {
