@@ -72,6 +72,17 @@ app.MapGet("/api/people", (PeopleDotOrgDbContext db) =>
     return db.People.ToList();
 });
 
+//Get Single Person By Id
+app.MapGet("/api/person/{id}", (PeopleDotOrgDbContext db, int id) =>
+{
+    Person person = db.People.SingleOrDefault(x => x.Id == id);
+    if (person == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(person);
+});
+
 //Create Person
 app.MapPost("/api/person", (PeopleDotOrgDbContext db, Person person) =>
 {
@@ -103,7 +114,7 @@ app.MapPut("/api/person/{personId}", (PeopleDotOrgDbContext db, int personId, Pe
 });
 
 
-// Delete an user
+// Delete an person
 app.MapDelete("/api/person/{personId}", (PeopleDotOrgDbContext db, int personId) =>
 {
     Person person = db.People.SingleOrDefault(u => u.Id == personId);
