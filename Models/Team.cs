@@ -10,7 +10,7 @@ public class Team
     public string Name { get; set; }
     public string Description { get; set; }
     public int? PlanId { get; set; }
-
+    public int TeamLeadId { get; set; }
     public ICollection<Person> People { get; set; }
 
 }

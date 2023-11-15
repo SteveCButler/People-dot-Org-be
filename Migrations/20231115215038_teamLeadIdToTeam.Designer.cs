@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using people_dot_org;
@@ -11,9 +12,10 @@ using people_dot_org;
 namespace people_dot_org.Migrations
 {
     [DbContext(typeof(PeopleDotOrgDbContext))]
-    partial class PeopleDotOrgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231115215038_teamLeadIdToTeam")]
+    partial class teamLeadIdToTeam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
