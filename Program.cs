@@ -138,12 +138,22 @@ app.MapGet("/api/teams", (PeopleDotOrgDbContext db) =>
 //Get Single Team By Id
 app.MapGet("/api/team/{id}", (PeopleDotOrgDbContext db, int id) =>
 {
-    Team team = db.Teams.SingleOrDefault(x => x.Id == id);
+    Team team = db.Teams.Where(x => x.Id == id).Include(x => x.People).FirstOrDefault();
     if (team == null)
     {
         return Results.NotFound();
     }
     return Results.Ok(team);
+});
+
+app.MapGet("/api/team/{teamLeadId}", (PeopleDotOrgDbContext db, int teamLeadId) =>
+{
+    Team teamLead = db.Teams.Where(x => x.TeamLeadId == teamLeadId).Include(x => x.People).FirstOrDefault();
+    if (teamLead == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(teamLead);
 });
 
 // Create Team
@@ -166,6 +176,22 @@ app.MapPut("/api/team/{teamId}", (PeopleDotOrgDbContext db, int teamId, Team tea
     teamToUpdate.Id = team.Id;
     teamToUpdate.Name = team.Name;
     teamToUpdate.Description = team.Description;
+
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
+//Add Team Lead to Team
+app.MapPut("/api/team/{teamId}/{personId}", (PeopleDotOrgDbContext db, int teamId, int personId,  Team team) =>
+{
+    Team teamToUpdate = db.Teams.SingleOrDefault(s => s.Id == teamId);
+    if (teamToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+
+    teamToUpdate.TeamLeadId = personId;
 
     db.SaveChanges();
 
