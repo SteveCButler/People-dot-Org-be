@@ -136,7 +136,7 @@ app.MapGet("/api/teams", (PeopleDotOrgDbContext db) =>
 });
 
 //Get Single Team By Id
-app.MapGet("/api/team/{id}", (PeopleDotOrgDbContext db, int id) =>
+app.MapGet("/api/singleTeam/{id}", (PeopleDotOrgDbContext db, int id) =>
 {
     Team team = db.Teams.Where(x => x.Id == id).Include(x => x.People).FirstOrDefault();
     if (team == null)
@@ -212,6 +212,72 @@ app.MapDelete("/api/team/{teamId}", (PeopleDotOrgDbContext db, int teamId) =>
 
     return Results.NoContent();
 });
+
+//Add Person to Team
+
+app.MapPost("/api/add-to-team/{teamId}/{personId}", async (PeopleDotOrgDbContext db, int teamId, int personId) =>
+{
+    var team = await db.Teams.FindAsync(teamId);
+    var person = await db.People.FindAsync(personId);
+
+    if (team == null || person == null)
+    {
+        return Results.NotFound("Team or person not found");
+    }
+
+    // Check if the person is already part of the team
+    if (team.People.Any(p => p.Id == personId))
+    {
+        return Results.BadRequest("Person is already part of the team");
+    }
+
+    // Add the person to the team
+    team.People.Add(person);
+
+    try
+    {
+        await db.SaveChangesAsync();
+        return Results.Ok($"Person {person.FirstName} {person.LastName} added to Team {team.Name} successfully");
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest($"Error: {ex.Message}");
+    }
+});
+
+//Remove Person From TEam
+app.MapDelete("/api/remove-from-team/{teamId}/{personId}", async (PeopleDotOrgDbContext db, int teamId, int personId) =>
+{
+    // var team = await db.Teams.FindAsync(teamId);
+    var team = db.Teams.Where(x => x.Id == teamId).Include(x => x.People).FirstOrDefault();
+    var person = await db.People.FindAsync(personId);
+
+    if (team == null || person == null)
+    {
+        return Results.NotFound("Team or person not found");
+    }
+
+    // Check if the person is part of the team
+    if (!team.People.Any(p => p.Id == personId))
+    {
+        return Results.BadRequest("Person is not part of the team");
+    }
+
+    // Remove the person from the team
+    team.People.Remove(person);
+
+    try
+    {
+        await db.SaveChangesAsync();
+        return Results.Ok($"Person {person.FirstName} {person.LastName} removed from Team {team.Name} successfully");
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest($"Error: {ex.Message}");
+    }
+});
+
+
 
 // ### Plan Endpoints ###
 
