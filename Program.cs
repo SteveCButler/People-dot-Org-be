@@ -122,6 +122,11 @@ app.MapDelete("/api/person/{personId}", (PeopleDotOrgDbContext db, int personId)
     {
         return Results.NotFound();
     }
+    foreach (var team in person.Teams)
+    {
+        db.Teams.Remove(team);
+    }
+
     db.People.Remove(person);
     db.SaveChanges();
     return Results.NoContent();
@@ -146,6 +151,7 @@ app.MapGet("/api/singleTeam/{id}", (PeopleDotOrgDbContext db, int id) =>
     return Results.Ok(team);
 });
 
+//Get team by TeamLeadId
 app.MapGet("/api/team/{teamLeadId}", (PeopleDotOrgDbContext db, int teamLeadId) =>
 {
     Team teamLead = db.Teams.Where(x => x.TeamLeadId == teamLeadId).Include(x => x.People).FirstOrDefault();
@@ -186,12 +192,15 @@ app.MapPut("/api/team/{teamId}", (PeopleDotOrgDbContext db, int teamId, Team tea
 app.MapPut("/api/team/{teamId}/{personId}", (PeopleDotOrgDbContext db, int teamId, int personId,  Team team) =>
 {
     Team teamToUpdate = db.Teams.SingleOrDefault(s => s.Id == teamId);
+    Person personToUpdate = db.People.SingleOrDefault(p => p.Id == personId);
     if (teamToUpdate == null)
     {
         return Results.NotFound();
     }
 
     teamToUpdate.TeamLeadId = personId;
+
+    personToUpdate.IsTeamLead = true;
 
     db.SaveChanges();
 
@@ -278,6 +287,23 @@ app.MapDelete("/api/remove-from-team/{teamId}/{personId}", async (PeopleDotOrgDb
 });
 
 
+//Add Team to Plan
+app.MapPut("/api/add-plan-to-team/{teamId}/{planId}", (PeopleDotOrgDbContext db, int teamId, int planId, Team team) =>
+{
+    Team teamToUpdate = db.Teams.SingleOrDefault(s => s.Id == teamId);
+    if (teamToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+
+    teamToUpdate.PlanId = planId;
+
+
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
 
 // ### Plan Endpoints ###
 
@@ -286,6 +312,28 @@ app.MapGet("/api/plans", (PeopleDotOrgDbContext db) =>
 {
     return db.Plans.ToList();
 
+});
+
+//Get Single Plan By Id
+app.MapGet("/api/singlePlan/{id}", (PeopleDotOrgDbContext db, int id) =>
+{
+    Plan plan = db.Plans.Where(x => x.Id == id).FirstOrDefault();
+    if (plan == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(plan);
+});
+
+//Get Teams by PlanId
+app.MapGet("/api/teams-by-planId/{planId}", (PeopleDotOrgDbContext db, int planId) =>
+{
+    var teams = db.Teams.Where(x => x.PlanId == planId).ToList();
+    if (teams == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(teams);
 });
 
 // Create Plan
