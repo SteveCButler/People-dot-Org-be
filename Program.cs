@@ -182,6 +182,7 @@ app.MapPut("/api/team/{teamId}", (PeopleDotOrgDbContext db, int teamId, Team tea
     teamToUpdate.Id = team.Id;
     teamToUpdate.Name = team.Name;
     teamToUpdate.Description = team.Description;
+    teamToUpdate.PlanId = team.PlanId;
 
     db.SaveChanges();
 
@@ -287,22 +288,7 @@ app.MapDelete("/api/remove-from-team/{teamId}/{personId}", async (PeopleDotOrgDb
 });
 
 
-//Add Team to Plan
-app.MapPut("/api/add-plan-to-team/{teamId}/{planId}", (PeopleDotOrgDbContext db, int teamId, int planId, Team team) =>
-{
-    Team teamToUpdate = db.Teams.SingleOrDefault(s => s.Id == teamId);
-    if (teamToUpdate == null)
-    {
-        return Results.NotFound();
-    }
 
-    teamToUpdate.PlanId = planId;
-
-
-    db.SaveChanges();
-
-    return Results.NoContent();
-});
 
 
 // ### Plan Endpoints ###
@@ -356,6 +342,7 @@ app.MapPut("/api/plan/{planId}", (PeopleDotOrgDbContext db, int planId, Plan pla
     planToUpdate.Id = plan.Id;
     planToUpdate.Name = plan.Name;
     planToUpdate.Details = plan.Details;
+   
 
     db.SaveChanges();
 
@@ -377,6 +364,24 @@ app.MapDelete("/api/plan/{planId}", (PeopleDotOrgDbContext db, int planId) =>
 
     return Results.NoContent();
 });
+
+//Add Team to Plan
+app.MapPut("/api/add-plan-to-team/{teamId}/{planId}", (PeopleDotOrgDbContext db, int teamId, int planId, Team team) =>
+{
+    Team teamToUpdate = db.Teams.SingleOrDefault(s => s.Id == teamId);
+    if (teamToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+
+    teamToUpdate.PlanId = planId;
+
+
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
 
 // ### REQUEST Endpoints
 
